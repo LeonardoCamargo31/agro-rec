@@ -9,10 +9,6 @@ const ResellerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    photo: {
-        type: String,
-        required: true
-    },
     state: {
         type: String,
         require: true,

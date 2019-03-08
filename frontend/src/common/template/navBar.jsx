@@ -14,7 +14,7 @@ export default props => (
         <span className="heading">Principal</span>
         <ul className="list-unstyled">
             <NavBarItem path="reseller" icon="icon-padnote" label="Revendedoras"/>
-            <NavBarItem path="product" icon="icon-padnote" label="Produtos"/>
+            <NavBarItem path="listProducts" icon="icon-padnote" label="Produtos"/>
         </ul>
         {/*<span className="heading">Extras</span>
         <ul className="list-unstyled">

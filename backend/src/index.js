@@ -8,8 +8,6 @@ app.use(allowCors)
 app.use(bodyParser.json())//para ele entender quando enviar uma requisão com informações em json
 app.use(bodyParser.urlencoded({extended:false}))//para ele entender quando passar parametros via url
 
-
-
 require('./controllers/authController')(app)//e repassamos ao controller nossa instancia de app
 require('./controllers/resellerController')(app)
 require('./controllers/productController')(app)

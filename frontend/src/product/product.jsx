@@ -2,6 +2,9 @@ import React, { Fragment, Component } from 'react'
 import axios from 'axios'
 import { browserHistory } from 'react-router';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import Input from '../common/form/input'
 import InputMoney from '../common/form/inputMoney'
@@ -35,6 +38,18 @@ export default class Product extends Component {
         this.state = { ...initialState, reseller: this.props.location.state.reseller }
     }
 
+    notifySuccess(message) {
+        toast.success(message, {
+            position: toast.POSITION.TOP_RIGHT
+        });
+    }
+
+    notifyError(message) {
+        toast.error(message, {
+            position: toast.POSITION.TOP_RIGHT
+        });
+    }
+
     componentWillMount() {
         this.getUpdatedList()
     }
@@ -54,12 +69,12 @@ export default class Product extends Component {
     save() {
         if (validator.allValid()) {
             const product = this.state.product
-            console.log(product)
             const method = product._id ? 'put' : 'post'
             const url = product._id ? `${baseUrl}/${product._id}` : baseUrl
 
             axios[method](url, product)
                 .then(resp => {
+                    this.notifySuccess('Salvo com sucesso')
                     this.getUpdatedList()
                     this.setState({ product: initialState.product })
                 })
@@ -74,18 +89,18 @@ export default class Product extends Component {
     }
 
     getUpdatedList() {
-        axios(`${baseUrl}/${this.state.reseller._id}`).then(resp => {
+        axios(`${baseUrl}/reseller/${this.state.reseller._id}`).then(resp => {
             this.setState({ list: resp.data.products })
         })
     }
 
     load(product) {
-        console.log(product)
         this.setState({ product })
     }
 
     remove(product) {
         axios.delete(`${baseUrl}/${product._id}`).then(resp => {
+            this.notifySuccess('Deletado com sucesso!')
             this.getUpdatedList()
         })
     }
@@ -181,6 +196,7 @@ export default class Product extends Component {
                         </div>
                     </div>
                 </section>
+                <ToastContainer />
             </Fragment>
         )
     }

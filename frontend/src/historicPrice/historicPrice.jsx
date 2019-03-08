@@ -2,12 +2,11 @@ import React, { Fragment, Component } from 'react'
 import axios from 'axios'
 import { Line  } from 'react-chartjs-2';
 
+import Utils from '../common/utils'
 import Breadcrumb from '../common/template/breadcrumb'
 
 const baseUrl = 'http://localhost:5000/historicPrice'
-
-
-
+const utils=new Utils()
 
 export default class HistoricPrice extends Component {
     constructor(props) {
@@ -22,8 +21,7 @@ export default class HistoricPrice extends Component {
     }
 
     render() {
-        console.log(this.state.historic)
-        const labelHistoric= this.state.historic.map(item=>item.createAt)
+        const labelHistoric= this.state.historic.map(item=>utils.formatDateTime(item.createAt))
         const dataHistoric= this.state.historic.map(item=>item.price)
 
         const data = {

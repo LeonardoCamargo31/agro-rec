@@ -1,25 +1,24 @@
 import React, { Component, Fragment } from 'react'
-import axios from 'axios'
 import { browserHistory } from 'react-router';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import ImageUploader from 'react-images-upload';
-import FormData from 'form-data'
-
-
 import Input from '../common/form/input'
 import Button from '../common/form/button'
 import Breadcrumb from '../common/template/breadcrumb'
+import api from "../common/api";
 
 
 import SimpleReactValidator from 'simple-react-validator'
 
+
+
 const baseUrl = 'http://localhost:5000/reseller'
 
+
 const initialState = {
-    reseller: { name: '', address: '', photo: '' },
+    reseller: { name: '', address: '' },
     list: []
 }
 
@@ -56,12 +55,6 @@ export default class Reseller extends Component {
         this.getUpdatedList()
     }
 
-    onDrop(picture) {
-        const reseller = this.state.reseller
-        reseller.photo = picture
-        this.setState({ reseller })
-    }
-
     updateField(event) {
         //pega todos os atributos
         const reseller = { ...this.state.reseller }
@@ -76,20 +69,20 @@ export default class Reseller extends Component {
     save() {
         if (validator.allValid()) {
             const reseller = this.state.reseller
-            console.log(reseller)
+
             const method = reseller._id ? 'put' : 'post'
             const url = reseller._id ? `${baseUrl}/${reseller._id}` : baseUrl
 
 
-            axios[method](url, reseller)
-            .then(resp => {
-                console.log(resp)
-                this.notifySuccess('Salvo com sucesso')
-                this.getUpdatedList()
-                this.setState({ reseller: initialState.reseller })
-            })
+            api[method](url, reseller)
+                .then(resp => {
+                    this.notifySuccess('Salvo com sucesso')
+                    this.getUpdatedList()
+                    this.setState({ reseller: initialState.reseller })
+                })
 
             validator = newValidator()
+
         } else {
             validator.showMessages();
             // rerender to show messages for the first time
@@ -98,7 +91,7 @@ export default class Reseller extends Component {
     }
 
     getUpdatedList() {
-        axios(baseUrl).then(resp => {
+        api(baseUrl).then(resp => {
             this.setState({ list: resp.data.resellers })
         })
     }
@@ -108,7 +101,7 @@ export default class Reseller extends Component {
     }
 
     remove(reseller) {
-        axios.delete(`${baseUrl}/${reseller._id}`).then(resp => {
+        api.delete(`${baseUrl}/${reseller._id}`).then(resp => {
             if (resp.data.code == 1) {
                 //okay, registo deletado
                 this.notifySuccess('Deletado com sucesso!')
@@ -141,22 +134,6 @@ export default class Reseller extends Component {
                             messageError={validator.message('address', this.state.reseller.address, 'required')}
                             value={this.state.reseller.address}
                             onChange={e => this.updateField(e)} />
-
-                        {/*<Input label="Foto" type="text" placeholder="Foto" name="photo"
-                            messageError={validator.message('photo', this.state.reseller.photo, 'required')}
-                            value={this.state.reseller.photo}
-                            onChange={e => this.updateField(e)} />*/}
-
-                        <ImageUploader
-                            withPreview={true}
-                            withIcon={true}
-                            label='Tamanho máximo do arquivo: 5mb, aceito: jpg, png e gif'
-                            buttonText='Selecionar imagem'
-                            onChange={e => this.onDrop(e)}
-                            imgExtension={['.jpg', '.png', '.gif']}
-                            maxFileSize={5242880}
-                            singleImage={true}
-                        />
 
                         <div className="row">
                             <Button type="btn btn-primary" text="Cadastrar" onClick={e => this.save()} />
