@@ -9,12 +9,7 @@ import Button from '../common/form/button'
 import Breadcrumb from '../common/template/breadcrumb'
 import api from "../common/api";
 
-
 import SimpleReactValidator from 'simple-react-validator'
-
-
-
-const baseUrl = 'http://localhost:5000/reseller'
 
 
 const initialState = {
@@ -32,10 +27,10 @@ function newValidator() {
 
 var validator = newValidator()
 
+
 export default class Reseller extends Component {
     constructor() {
         super()
-
         this.state = { ...initialState }
     }
 
@@ -71,7 +66,7 @@ export default class Reseller extends Component {
             const reseller = this.state.reseller
 
             const method = reseller._id ? 'put' : 'post'
-            const url = reseller._id ? `${baseUrl}/${reseller._id}` : baseUrl
+            const url = reseller._id ? `/reseller/${reseller._id}` : '/reseller'
 
 
             api[method](url, reseller)
@@ -91,8 +86,11 @@ export default class Reseller extends Component {
     }
 
     getUpdatedList() {
-        api(baseUrl).then(resp => {
+        //axios.get('/reseller')
+        api('/reseller').then(resp => {
             this.setState({ list: resp.data.resellers })
+        }).catch(error => {
+            console.log(error)
         })
     }
 
@@ -101,7 +99,7 @@ export default class Reseller extends Component {
     }
 
     remove(reseller) {
-        api.delete(`${baseUrl}/${reseller._id}`).then(resp => {
+        api.delete(`/reseller/${reseller._id}`).then(resp => {
             if (resp.data.code == 1) {
                 //okay, registo deletado
                 this.notifySuccess('Deletado com sucesso!')
