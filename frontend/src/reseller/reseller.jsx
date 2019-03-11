@@ -88,15 +88,8 @@ export default class Reseller extends Component {
     getUpdatedList() {
         //axios.get('/reseller')
         const token = localStorage.getItem('auth-token');
-        const config = {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        }
-
-        api.get('/reseller', {}, config).then(resp => {
+        api.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        api.get('/reseller').then(resp => {
             this.setState({ list: resp.data.resellers })
         }).catch(error => {
             console.log(error)
